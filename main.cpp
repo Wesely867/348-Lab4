@@ -1,85 +1,128 @@
 #include <stdio.h>
 
-
-int collect_points(int points, int set, int sum){
-    /*Take the leftovers, and add scores based on set*/
-    sum += points * set;
-    return sum;
+float celsius_to_fahrenheit(float celsius){
+    float ans = (9*celsius)/5 + 32;
+    return ans;
 }
 
-int find_max(int points, int point_value){
-    /*Find the maximum number amount that can go in*/
-    int max = point_value / points;
-    return max;
+float fahrenheit_to_celsius(float fahrenheit){
+    float ans = (5*(fahrenheit-32))/9;
+    return ans;
+}
+
+float celsius_to_kelvin(float celsius){
+    float ans = celsius + 273.15;
+    return ans;
+}
+
+float kelvin_to_celsius(float kelvin){
+    float ans = kelvin - 273.15;
+    return ans;
+}
+
+void categorize_temperature(float celsius){
+    if(celsius < 0){
+        printf("Freezing: Stay indoors.\n");
+    }
+    else if(celsius < 10){
+        printf("Cold: Wear a jacket.\n");
+    }
+    else if(celsius <25){
+        printf("Comfortable: Go touch grass.\n");
+    }
+    else if(celsius < 35){
+        printf("Hot: Drink water.\n");
+    }
+    else{
+        printf("Extreme heat: Stay indoors.\n");
+    }
+    return;
 }
 
 int main(){
 
-    /*int is 4 bytes*/
+    float c_temp;
+    float f_temp;
+    float k_temp;
+
+    float user_input;
+    char temp_scale;
+    char target_scale;
 
     while(1){
 
-        int point_value;
+        printf("Enter the temperature value: ");
+        scanf("%f", &user_input);
+        getchar();
 
-        /*Prompt the user*/
-        while(1){
-            printf("=============================================================\n");
-            printf("Enter a number between 2 and 1000. Enter 0 or 1 to quit.\n");
-            scanf("%d", &point_value);
-            if((point_value <= 1000) && (point_value >=2)){
-                printf("\n");
-                break;
-            }
-            else if((point_value == 1) || (point_value == 0)){
-                printf("User ended program \n \n");
-                return 0;
-            }
-            else {
-                printf("Bad input. \n");
-            }
+        printf("Choose temperature scale (type 'F', 'K', or 'C'): ");
+        scanf("%c", &temp_scale);
+        getchar();
+
+        printf("Choose temperature target (type 'F', 'K', or 'C'): ");
+        scanf("%c", &target_scale);
+        getchar();
+
+
+        /*Check user_input*/
+        if((user_input < 0) && (temp_scale == 'K')){
+            printf("Invalid input: Kelvin can't be negative.\n");
         }
-
-        /*Declare Variables*/
-
-        int one_max = find_max(8, point_value);   /*TD + 2* 8*/
-        int two_max = find_max(7, point_value);   /*TD + 1* 7*/
-        int three_max = find_max(6, point_value); /*TD      6*/
-        int four_max = find_max(3, point_value);  /*FG      3*/
-        int five_max = find_max(2, point_value);  /*Saf     2*/
-
-
-        int sum;
-
-        /*Start loop*/
-
-        for(int i = 0; i <= one_max; i++){
-            for(int j = 0; j <= two_max; j++){
-                for(int k = 0; k <= three_max; k++){
-                    for(int m = 0; m <= four_max; m++){
-                        for(int n = 0; n <= five_max; n++){
-                            sum = collect_points(8, i, sum);
-                            sum = collect_points(7, j, sum);
-                            sum = collect_points(6, k, sum);
-                            sum = collect_points(3, m, sum);
-                            sum = collect_points(2, n, sum);
-
-                            
-
-                            if(sum == point_value){
-
-                                printf("%d TD + 2pt, %d TD + FG, %d TD, %d 3pt FG, %d Safety \n", i, j, k, m, n);
-                            }
-                            sum = 0;
-                        }
-                    }
-                }
-            
-            }
-
+        else if((user_input < -273.15) && (temp_scale == 'C')){
+            printf("Invalid input: Celsius can't be below 273.15.\n");
+        }
+        else if((user_input < -459.67) && (temp_scale == 'F')){
+            printf("Invalid input: Fahrenheit can't be below -459.67.\n");
+        }
+        else if(target_scale == temp_scale){
+            printf("Invalid input: Temperature already in desired form.\n");
+        }
+        else if ((target_scale || temp_scale) != ('F' || 'K' || 'C')){
+            printf("invalid input: Temperature scale is invalid. \n");
+        }
+        else{
+            break;
         }
     }
 
+    if(temp_scale == 'C'){
+        c_temp = user_input;
+        if(target_scale == 'K'){
+            k_temp = celsius_to_kelvin(c_temp);
+            printf("Kelvin temperature = %.3f K\n", k_temp);
+        }
+        else if(target_scale == 'F'){
+            f_temp = celsius_to_fahrenheit(c_temp);
+            printf("Fahrenheit temperature = %.3f F\n", f_temp);
+        }
+    }
+    else if(temp_scale == 'F'){
+        f_temp = user_input;
+        c_temp = fahrenheit_to_celsius(f_temp);
+        if(target_scale == 'K'){
+            k_temp = celsius_to_kelvin(c_temp);
+            printf("Kelvin temperature = %.3f K\n", k_temp);
+        }
+        else if(target_scale == 'C'){
+            printf("Celsius temperature = %.3f C\n", c_temp);
+        }
+    }
+    else if (temp_scale == 'K'){
+        k_temp = user_input;
+        c_temp = kelvin_to_celsius(k_temp);
+        if(target_scale == 'C'){
+            printf("Celsius temperature: %.3f C\n", c_temp);
+        }
+        else if(target_scale == 'F'){
+            f_temp = celsius_to_fahrenheit(c_temp);
+            printf("Fahrenheit temperature: %.3f F\n", f_temp);
+        }
+        }
+
+    categorize_temperature(c_temp);
+
+    printf("End of program.\n====================================================");
+
+    return 0;
+
 }
-
-
-
